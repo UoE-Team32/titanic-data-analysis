@@ -10,9 +10,9 @@ ENV PROJECT_DIR /app
 
 WORKDIR ${PROJECT_DIR}/
 
-COPY Pipfile Pipfile.lock ${PROJECT_DIR}/
+COPY Pipfile ${PROJECT_DIR}/
 
-RUN pipenv lock
-
-RUN pipenv install --dev --system --deploy
+# Lock and install Pip modules
+RUN pipenv lock && \
+    pipenv install --dev --system --deploy
 
