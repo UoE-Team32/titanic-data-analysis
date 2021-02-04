@@ -16,4 +16,3 @@ USER %END_USER%
 
 # install Pip modules
 RUN pip install --upgrade pip && pip install -r requirements.txt
-

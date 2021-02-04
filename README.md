@@ -1,6 +1,7 @@
 # titanic-data-analysis
 
 ## View Matplot Lib from within docker container...
+
 ### Linux
 https://medium.com/@SaravSun/running-gui-applications-inside-docker-containers-83d65c0db110
 - share the Host’s XServer with the Container by creating a volume -v /tmp/.X11-unix:/tmp/.X11-unix
