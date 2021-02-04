@@ -123,3 +123,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# titanic-data-analysis
+Dockerfile
+data/out/
+!data/out/.gitsave

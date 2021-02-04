@@ -1,0 +1,6 @@
+pandas
+missingno
+
+pylint
+yapf
+coverage
