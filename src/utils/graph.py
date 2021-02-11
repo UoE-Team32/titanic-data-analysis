@@ -14,6 +14,6 @@ class Graph:
         if TK_IMPLEMENTED:
             plt.show()
         else:
-            filename = "../data/out/img.png"
+            filename = "/app/data/out/img.png"
             plt.savefig(filename)
             print("plot saved as: %s" % filename)
