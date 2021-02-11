@@ -3,9 +3,9 @@ import logging
 
 import missingno as msno
 
-from src.utils.log import Log
-from src.utils.dataset import Column, DataSet
-from src.utils.graph import Graph
+from utils.log import Log
+from utils.dataset import Column, DataSet
+from utils.graph import Graph
 import data_gaps
 
 

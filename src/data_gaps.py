@@ -2,8 +2,8 @@ from collections import Counter
 
 import pandas as pd
 
-from src.utils.dataset import Column, DataSet
-from src.utils.log import Log
+from utils.dataset import Column, DataSet
+from utils.log import Log
 
 
 def replace_age_na_values_w_estimates(data: pd.DataFrame, column: Column):

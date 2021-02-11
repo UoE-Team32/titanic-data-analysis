@@ -3,7 +3,7 @@ from enum import Enum
 
 import pandas as pd
 
-from src.utils.log import Log
+from utils.log import Log
 
 
 class Column(Enum):
