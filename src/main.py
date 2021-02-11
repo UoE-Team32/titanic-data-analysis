@@ -51,16 +51,22 @@ def main(argv):
     Graph.plot_graph()
 
     # Fill gaps in age by using mean avg for adults and ... for children
-    data = data_gaps.replace_age_na_values(data, Column.AGE)
-    msno.matrix(data)
-    Graph.plot_graph()
+    data = data_gaps.replace_age_na_values_w_estimates(data, Column.AGE)
     # Fill gaps in embarked by using a weighted avg
     data = data_gaps.replace_weighted_avg(data, Column.EMBARKED)
 
+    # Print fixed dataset
+    msno.matrix(data)
+    Graph.plot_graph()
+
     # Check that there are no more errors in the dataset
     if data.isna().values.any():
-        Log.critical("There is N/A data within the dataset",
+        data_set.save_csv("ERROR.csv")
+        Log.critical("There is N/A data within the dataset please check \"ERROR.csv\"",
                      data.isna().sum())
+
+    # Save output .csv
+    data_set.save_csv("estimations.csv")
 
 
 if __name__ == '__main__':

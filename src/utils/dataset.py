@@ -3,6 +3,8 @@ from enum import Enum
 
 import pandas as pd
 
+from src.utils.log import Log
+
 
 class Column(Enum):
     PASSENGERID = "PassengerId"
@@ -27,7 +29,32 @@ class DataSet:
 
     def read_csv(self, data_file_name: str):
         """
-
-        :param data_file_name:
+        Reads the said csv file from $(pwd)/data
+        :param data_file_name: file name of csv file containing titanic data
         """
         self.train = pd.read_csv(os.path.join(os.getenv("PROJECT_DIR"), "data", data_file_name))
+
+    def save_csv(self, data_file_name: str):
+        """
+        Writes the said csv file to $(pwd)/data/out
+        :param data_file_name: file name of csv file containing titanic data
+        """
+        # TODO(M-Whitaker): Make sure we don't overwrite data
+        self.train.to_csv(os.path.join(os.getenv("PROJECT_DIR"), "data/out", data_file_name))
+
+    @staticmethod
+    def get_class_name_str(class_no: int):
+        """
+        Turns an integer into a string representation.
+        :param class_no: class number from 1-3
+        :return: a string representation of class_no
+        """
+        if 3 >= class_no >= 1:
+            if class_no == 1:
+                return "First"
+            elif class_no == 2:
+                return "Second"
+            elif class_no == 3:
+                return "Third"
+        else:
+            Log.warning("Provided invalid class number %d" % class_no)

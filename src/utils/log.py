@@ -26,9 +26,9 @@ class Log:
     @classmethod
     def critical(cls, *msgs: any, return_code: Union[int, None] = 1):
         """
-
+        Logs critical messages to stdout and exits program.
         :type msgs: object
-        :param return_code:
+        :param return_code: Override the return code or None to not exit program.
         """
         for msg in msgs:
             cls.logger.critical(msg)
@@ -38,9 +38,9 @@ class Log:
     @classmethod
     def error(cls, *msgs: any, return_code: Union[int, None] = 1):
         """
-
+        Logs error messages to stdout and exits program.
         :type msgs: object
-        :param return_code:
+        :param return_code: Override the return code or None to not exit program.
         """
         for msg in msgs:
             cls.logger.error(msg)
@@ -50,7 +50,7 @@ class Log:
     @classmethod
     def warning(cls, *msgs: any):
         """
-
+        Logs warning messages to stdout.
         :type msgs: object
         """
         for msg in msgs:
@@ -65,7 +65,7 @@ class Log:
     @classmethod
     def info(cls, *msgs: any):
         """
-
+        Logs info messages to stdout.
         :type msgs: object
         """
         for msg in msgs:
@@ -74,7 +74,7 @@ class Log:
     @classmethod
     def debug(cls, *msgs: any):
         """
-
+        Logs debug messages to stdout.
         :type msgs: object
         """
         for msg in msgs:
