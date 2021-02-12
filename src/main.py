@@ -8,6 +8,9 @@ from utils.dataset import Column, DataSet
 from utils.graph import Graph
 import data_gaps
 
+# Supress warnings (used to hide Tensorflow warnings)
+import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 def args():
     parser = argparse.ArgumentParser(description='Description.')
@@ -70,7 +73,6 @@ def main(argv):
 
     # Save output .csv
     data_set.save_csv("estimations.csv")
-
 
 if __name__ == '__main__':
     main(args())
