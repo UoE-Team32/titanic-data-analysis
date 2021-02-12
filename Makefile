@@ -4,7 +4,7 @@ LOGLEVEL ?= INFO
 LOGGING_CMD = --log=${LOGLEVEL}
 
 test_model: build
-	docker run --rm -it --volume "$$(pwd)":/app titanic-data-analysis python src/main.py --dataset=test.csv ${LOGGING_CMD}
+	docker run --rm -it --volume "$$(pwd)":/app titanic-data-analysis python src/main.py --train-dataset=train.csv --test-dataset=test.csv ${LOGGING_CMD}
 
 train_model: build
 	docker run --rm -it --volume "$$(pwd)":/app titanic-data-analysis python src/main.py --dataset=train.csv --log=DEBUG
