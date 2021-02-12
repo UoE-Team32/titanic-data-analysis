@@ -55,6 +55,9 @@ def main(argv):
     # Fill gaps in embarked by using a weighted avg
     data = data_gaps.replace_weighted_avg(data, Column.EMBARKED)
 
+    # Fill gaps in fare by using a weighted avg
+    data = data_gaps.replace_weighted_avg(data, Column.FARE)
+
     # Print fixed dataset
     msno.matrix(data)
     Graph.plot_graph()

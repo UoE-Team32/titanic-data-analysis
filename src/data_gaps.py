@@ -62,10 +62,10 @@ def replace_weighted_avg(data: pd.DataFrame, column: Column):
             values = data.loc[data[Column.PCLASS.value] == p_class, column.value].values
             yield Counter(values).most_common(1)[0]
 
-    if column.EMBARKED:
+    if column.EMBARKED or column.FARE:
         for idx, (mean, no_of_occurrences) in enumerate(passenger_class_mode_generator()):
             idx = idx + 1
-            Log.debug("Replacing %s class setoff Embarked mean with %s" % (DataSet.get_class_name_str(idx), mean))
+            Log.debug("Replacing %s class fare mean with %s" % (DataSet.get_class_name_str(idx), mean))
 
             data.loc[(data[Column.PCLASS.value] == idx) & (data[column.value].isnull()), [column.value]] = mean
 

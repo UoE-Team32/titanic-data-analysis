@@ -1,8 +1,13 @@
-.PHONY: test bash build main
+.PHONY: test bash build train_model test_model
 
+LOGLEVEL ?= INFO
+LOGGING_CMD = --log=${LOGLEVEL}
 
-main: build
-	docker run --rm -it --volume "$$(pwd)":/app titanic-data-analysis python src/main.py
+test_model: build
+	docker run --rm -it --volume "$$(pwd)":/app titanic-data-analysis python src/main.py --dataset=test.csv ${LOGGING_CMD}
+
+train_model: build
+	docker run --rm -it --volume "$$(pwd)":/app titanic-data-analysis python src/main.py --dataset=train.csv --log=DEBUG
 
 build: Dockerfile
 	docker build --tag titanic-data-analysis .
