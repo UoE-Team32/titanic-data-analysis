@@ -1,11 +1,18 @@
 import unittest
 
-import pandas as pd
-
+from src.utils.graph import TK_IMPLEMENTED
 from src.utils.dataset import DataSet
 
 
-class DataSetTestCase(unittest.TestCase):
+class GraphTestCase(unittest.TestCase):
 
-    def test_import_data(self):
-        self.assertTrue(True)
+    def test_tk_implemented(self):
+        self.assertTrue(TK_IMPLEMENTED, msg="TK is not implemented in python")
+
+
+class DatasetTestCase(unittest.TestCase):
+
+    def test_get_class_name_str(self):
+        self.assertEqual("First", DataSet.get_class_name_str(1))
+        self.assertEqual("Second", DataSet.get_class_name_str(2))
+        self.assertEqual("Third", DataSet.get_class_name_str(3))

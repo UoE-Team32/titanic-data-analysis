@@ -1,0 +1,3 @@
+[submodule "utils/UoE-Team32-tensorflow"]
+	path = utils/UoE-Team32-tensorflow
+	url = git@github.com:UoE-Team32/tensorflow.git
