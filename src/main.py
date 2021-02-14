@@ -89,12 +89,12 @@ def main(argv):
         Log.critical("There is N/A data within the dataset please check \"ERROR.csv\"",
                      test_data.isna().sum())
 
-    # This bit is for testing only
-    
-
     model = Model(data, test_data)
     model.train()
 
+    # Output to a CSV
+    output_csv = model.test()
+    output_csv.to_csv("output.csv", index=None)
 
 if __name__ == '__main__':
     main(args())

@@ -32,7 +32,7 @@ class DataSet:
         Reads the said csv file from $(pwd)/data
         :param data_file_name: file name of csv file containing titanic data
         """
-        self.train = pd.read_csv(os.path.join(os.getenv("PROJECT_DIR"), "data", data_file_name))
+        self.train = pd.read_csv(os.path.join(os.getenv("PROJECT_DIR"), "data", data_file_name), index_col=Column.PASSENGERID.value)
 
     def save_csv(self, data_file_name: str):
         """
@@ -40,7 +40,7 @@ class DataSet:
         :param data_file_name: file name of csv file containing titanic data
         """
         # TODO(M-Whitaker): Make sure we don't overwrite data
-        self.train.to_csv(os.path.join(os.getenv("PROJECT_DIR"), "data/out", data_file_name))
+        self.train.to_csv(os.path.join(os.getenv("PROJECT_DIR"), "data/out", data_file_name), index=False)
 
     @staticmethod
     def get_class_name_str(class_no: int):
