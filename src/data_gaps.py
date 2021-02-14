@@ -24,7 +24,9 @@ def replace_age_na_values_w_estimates(data: pd.DataFrame, column: Column):
     # Here we are saying that anyone that has mr/mrs is married and is
     # defiantly over 18 so we are taking a mean value of over 18s.
     # This is quite a long step because Mr is sometimes given at 16 but it is close enough.
-    data.loc[(data[Column.NAME.value].str.contains(r".*Mr\.|.*Mrs\.")) & (data[column.value].isnull()), [column.value]] = mean
+    data.loc[
+        (data[Column.NAME.value].str.contains(r".*Mr\.|.*Mrs\.")) & (data[column.value].isnull()),
+        [column.value]] = mean
 
     # Here we are taking the remaining and taking a best guess
     # By using the

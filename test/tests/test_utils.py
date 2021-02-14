@@ -1,7 +1,7 @@
 import unittest
 
-from src.utils.graph import TK_IMPLEMENTED
-from src.utils.dataset import DataSet
+from utils.graph import TK_IMPLEMENTED
+from utils.dataset import DataSet
 
 
 class GraphTestCase(unittest.TestCase):

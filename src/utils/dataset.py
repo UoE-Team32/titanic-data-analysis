@@ -1,5 +1,7 @@
 import os
 from enum import Enum
+from typing import Iterable
+import re
 
 import pandas as pd
 
@@ -22,25 +24,49 @@ class Column(Enum):
 
 
 class DataSet:
-    train = pd.DataFrame()
+    df = pd.DataFrame()
 
-    def __init__(self, data_file_name: str):
-        self.read_csv(data_file_name)
+    def __init__(self, data_file_name, df: pd.DataFrame = None):
+        if data_file_name:
+            self.read_csv(data_file_name)
+        elif df is not None:
+            self.df = df
+        else:
+            Log.error("Invalid constructor arguments")
 
     def read_csv(self, data_file_name: str):
         """
         Reads the said csv file from $(pwd)/data
         :param data_file_name: file name of csv file containing titanic data
         """
-        self.train = pd.read_csv(os.path.join(os.getenv("PROJECT_DIR"), "data", data_file_name), index_col=Column.PASSENGERID.value)
+        self.df = pd.read_csv(os.path.join(os.getenv("PROJECT_DIR"), "data", data_file_name),
+                              index_col=Column.PASSENGERID.value)
 
     def save_csv(self, data_file_name: str):
         """
         Writes the said csv file to $(pwd)/data/out
         :param data_file_name: file name of csv file containing titanic data
         """
-        # TODO(M-Whitaker): Make sure we don't overwrite data
-        self.train.to_csv(os.path.join(os.getenv("PROJECT_DIR"), "data/out", data_file_name), index=False)
+        file_path = os.path.join(os.getenv("PROJECT_DIR"), "data/out", data_file_name)
+        iteration = 0
+        while self.check_file_exists(file_path):
+            iteration += 1
+            if iteration == 1:
+                split_path = file_path.split(".csv")
+                file_path = "".join((split_path[0] + "_%d" % iteration) + ".csv")
+            else:
+                split_path = re.split(r"_\d*\.csv", file_path)
+                file_path = "".join((split_path[0] + "_%d" % iteration) + ".csv")
+
+        Log.info("Saving csv as \"%s\"..." % file_path)
+        self.df.to_csv(file_path, index=False)
+
+    @staticmethod
+    def check_file_exists(filename: str):
+        if os.path.isfile(filename):
+            return True
+        else:
+            return False
 
     @staticmethod
     def get_class_name_str(class_no: int):
