@@ -30,9 +30,21 @@ class File:
 
     @staticmethod
     def get_safe_file_name(file_name: str):
-        file_name = file_name\
-                        .replace(" ", "_")\
-                        .lower()
+        if file_name == "":
+            file_name = "#"
+        else:
+            file_name = file_name\
+                .replace(" ", "#")\
+                .replace("<", "")\
+                .replace(">", "")\
+                .replace(":", "")\
+                .replace("\"", "") \
+                .replace("\\", "") \
+                .replace("/", "")\
+                .replace("|", "")\
+                .replace("?", "")\
+                .replace("*", "") \
+                .lower()
 
         return file_name
 
