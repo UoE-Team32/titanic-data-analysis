@@ -1,11 +1,10 @@
 import os
 from enum import Enum
-from typing import Iterable
-import re
 
 import pandas as pd
 
 from utils.log import Log
+from utils.file import File
 
 
 class Column(Enum):
@@ -48,25 +47,10 @@ class DataSet:
         :param data_file_name: file name of csv file containing titanic data
         """
         file_path = os.path.join(os.getenv("PROJECT_DIR"), "data/out", data_file_name)
-        iteration = 0
-        while self.check_file_exists(file_path):
-            iteration += 1
-            if iteration == 1:
-                split_path = file_path.split(".csv")
-                file_path = "".join((split_path[0] + "_%d" % iteration) + ".csv")
-            else:
-                split_path = re.split(r"_\d*\.csv", file_path)
-                file_path = "".join((split_path[0] + "_%d" % iteration) + ".csv")
+        file_path = File.get_safe_file_path(file_path, ".csv")
 
         Log.info("Saving csv as \"%s\"..." % file_path)
         self.df.to_csv(file_path, index=False)
-
-    @staticmethod
-    def check_file_exists(filename: str):
-        if os.path.isfile(filename):
-            return True
-        else:
-            return False
 
     @staticmethod
     def get_class_name_str(class_no: int):

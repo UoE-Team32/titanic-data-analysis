@@ -2,17 +2,20 @@ import argparse
 import logging
 import os
 
+import missingno as msno
+
 import data_gaps
 from utils.dataset import Column, DataSet
+from utils.graph import Graph
 from utils.log import Log
-from utils.model import Model
+from model import Model
 
 # Suppress warnings (used to hide Tensorflow warnings)
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 
 def args():
-    parser = argparse.ArgumentParser(description='Description.')
+    parser = argparse.ArgumentParser(description='TensorFlow Model for the Kaggle Titanic Dataset.')
     parser.add_argument('--train-dataset', metavar='filename.csv', type=str, default="train.csv",
                         help='a titanic dataset csv file.', dest="train_data")
     parser.add_argument('--log', default="INFO", dest="loglevel", help='the logging level')
@@ -41,7 +44,7 @@ def args():
 
 def main(argv):
     """
-
+    Program Entry Point
     """
     Log.info("Starting application...")
 
@@ -71,6 +74,10 @@ def main(argv):
             _dataset.save_csv("ERROR.csv")
             Log.critical("There is N/A data within the dataset please check \"ERROR.csv\"",
                          data.isna().sum())
+
+        # Print fixed dataset
+        msno.matrix(data)
+        Graph.plot_graph("Missing data Fix", to_file=True)
 
         # Append dataset object to array
         datasets[dataset_name] = _dataset
