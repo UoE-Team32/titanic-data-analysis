@@ -1,20 +1,21 @@
 import argparse
 import logging
+import os
 
 import missingno as msno
 
-from utils.log import Log
+import data_gaps
 from utils.dataset import Column, DataSet
 from utils.graph import Graph
-from utils.model import Model
-import data_gaps
+from utils.log import Log
+from model import Model
 
-# Supress warnings (used to hide Tensorflow warnings)
-import os
+# Suppress warnings (used to hide Tensorflow warnings)
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
+
 def args():
-    parser = argparse.ArgumentParser(description='Description.')
+    parser = argparse.ArgumentParser(description='TensorFlow Model for the Kaggle Titanic Dataset.')
     parser.add_argument('--train-dataset', metavar='filename.csv', type=str, default="train.csv",
                         help='a titanic dataset csv file.', dest="train_data")
     parser.add_argument('--log', default="INFO", dest="loglevel", help='the logging level')
@@ -43,58 +44,52 @@ def args():
 
 def main(argv):
     """
-
+    Program Entry Point
     """
     Log.info("Starting application...")
 
-    # Train dataset
-    data_set = DataSet(argv.train_data)
-    data = data_set.train
+    datasets = {
+        "testing": None,
+        "training": None
+    }
 
-    # Remove Cabin header from the dataset
-    data.pop(Column.CABIN.value)
+    for dataset_name in datasets.keys():
+        # Create a dataset object
+        _dataset = DataSet(argv.train_data if dataset_name == "training" else argv.test_data)
+        data = _dataset.df
 
-    # Fill gaps in age by using mean avg for adults and ... for children
-    data = data_gaps.replace_age_na_values_w_estimates(data, Column.AGE)
-    # Fill gaps in embarked by using a weighted avg
-    data = data_gaps.replace_weighted_avg(data, Column.EMBARKED)
+        # Remove Cabin header from the dataset
+        data.pop(Column.CABIN.value)
 
-    # Fill gaps in fare by using a weighted avg
-    data = data_gaps.replace_weighted_avg(data, Column.FARE)
+        # Fill gaps in age by using mean avg for adults and ... for children
+        data = data_gaps.replace_age_na_values_w_estimates(data, Column.AGE)
+        # Fill gaps in embarked by using a weighted avg
+        data = data_gaps.replace_weighted_avg(data, Column.EMBARKED)
 
-    # Check that there are no more errors in the dataset
-    if data.isna().values.any():
-        data_set.save_csv("ERROR.csv")
-        Log.critical("There is N/A data within the dataset please check \"ERROR.csv\"",
-                     data.isna().sum())
+        # Fill gaps in fare by using a weighted avg
+        data = data_gaps.replace_weighted_avg(data, Column.FARE)
 
-    # Test dataset
-    test_dataset = DataSet(argv.test_data)
-    test_data = test_dataset.train
+        # Check that there are no more errors in the dataset
+        if data.isna().values.any():
+            _dataset.save_csv("ERROR.csv")
+            Log.critical("There is N/A data within the dataset please check \"ERROR.csv\"",
+                         data.isna().sum())
 
-    # Remove Cabin header from the dataset
-    test_data.pop(Column.CABIN.value)
+        # Print fixed dataset
+        msno.matrix(data)
+        Graph.plot_graph("Missing data Fix", to_file=True)
 
-    # Fill gaps in age by using mean avg for adults and ... for children
-    test_data = data_gaps.replace_age_na_values_w_estimates(test_data, Column.AGE)
-    # Fill gaps in embarked by using a weighted avg
-    test_data = data_gaps.replace_weighted_avg(test_data, Column.EMBARKED)
+        # Append dataset object to array
+        datasets[dataset_name] = _dataset
 
-    # Fill gaps in fare by using a weighted avg
-    test_data = data_gaps.replace_weighted_avg(test_data, Column.FARE)
-
-    # Check that there are no more errors in the dataset
-    if test_data.isna().values.any():
-        data_set.save_csv("ERROR.csv")
-        Log.critical("There is N/A data within the dataset please check \"ERROR.csv\"",
-                     test_data.isna().sum())
-
-    model = Model(data, test_data)
+    model = Model(datasets['training'].df, datasets['testing'].df)
     model.train()
 
     # Output to a CSV
-    output_csv = model.test()
-    output_csv.to_csv("output.csv", index=None)
+    output_df = model.test()
+    output_dataset = DataSet(None, output_df)
+    output_dataset.save_csv("output.csv")
+
 
 if __name__ == '__main__':
     main(args())
