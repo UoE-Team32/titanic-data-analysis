@@ -38,7 +38,7 @@ def main(argv):
 
     if platform.machine() in ["arm64", "aarch64"]:
         if argv.xServer:
-            docker_file = build_arm64_dockerfile(base_docker_file, "tensorflow-arm-tk")
+            docker_file = build_arm64_dockerfile(base_docker_file, "ghcr.io/uoe-team32/tensorflow/tensorflow-arm-tk")
         else:
             docker_file = build_arm64_dockerfile(base_docker_file, "linaro/tensorflow-arm-neoverse-n1:2.3.0-eigen")
     elif platform.machine() in ["x86_64", "x86"]:
