@@ -24,4 +24,5 @@ test:
 	docker run --rm -it --volume "$$(pwd)":/app titanic-data-analysis python test/main.py
 
 clean:
-	-rm -rf data/out/*
+	-rm -rf data/out/*.csv
+	-rm -rf data/out/graphs/*.png
