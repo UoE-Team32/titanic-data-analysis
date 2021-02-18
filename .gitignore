@@ -126,5 +126,6 @@ dmypy.json
 
 # titanic-data-analysis
 Dockerfile
-data/out/*
+data/out/*.csv
+data/out/graphs/*.png
 !.gitkeep
