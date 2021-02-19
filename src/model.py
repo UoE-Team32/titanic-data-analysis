@@ -65,9 +65,9 @@ class Model:
         result = self.run()
         pprint(result)
 
-    def run(self):
-        return NotImplementedError
+        return result
 
+    # Testing method
     def test(self):
         """
         Use the test dataset to produce and output for kaggle.

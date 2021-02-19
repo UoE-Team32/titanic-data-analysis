@@ -2,6 +2,7 @@ import argparse
 import logging
 
 import missingno as msno
+import matplotlib.pyplot as plt
 
 import data_gaps
 from model import BoostedTreesModel
@@ -16,6 +17,7 @@ from utils.log import Log
 
 def args():
     parser = argparse.ArgumentParser(description='TensorFlow Model for the Kaggle Titanic Dataset.')
+    parser.add_argument('--dummy',help='not gonna run model')
     parser.add_argument('--train-dataset', metavar='filename.csv', type=str, default="train.csv",
                         help='a titanic dataset csv file.', dest="train_data")
     parser.add_argument('--log', default="INFO", dest="loglevel", help='the logging level')
@@ -76,15 +78,18 @@ def main(argv):
                          data.isna().sum())
 
         # Print fixed dataset
-        msno.matrix(data)
-        Graph.plot_graph("Missing data Fix", to_file=True)
+        #msno.matrix(data)
+        #Graph.plot_graph("Missing data Fix", to_file=True)
 
         # Append dataset object to array
         datasets[dataset_name] = _dataset
 
-    model = BoostedTreesModel(datasets['training'].df, datasets['testing'].df)  # Change depending on algorithm
-    model.train()
+    model = Model(datasets['training'].df, datasets['testing'].df)
+    results = model.train()
 
+    plt.bar(*zip(*results.items()))
+    Graph.plot_graph('Graph',to_file=True)
+    
     # Output to a CSV
     output_df = model.test()
     output_dataset = DataSet(None, output_df)
