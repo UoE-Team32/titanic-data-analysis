@@ -43,8 +43,10 @@ class Model:
         
         return input_function
 
-    # Train
     def train(self):
+        """
+        Sets up feature columns and trains model.
+        """
         for feature_name in self.CATEGORICAL_COLUMNS:
             vocabulary = self.df_train[feature_name].unique()
             self.FEATURE_COLUMNS.append(
@@ -66,8 +68,10 @@ class Model:
     def run(self):
         return NotImplementedError
 
-    # Testing method
     def test(self):
+        """
+        Use the test dataset to produce and output for kaggle.
+        """
         test_input_fn = self.make_input_fn(self.df_test, self.y_test, num_epochs=1, shuffle=False)
 
         # Clean this up so we can choose between linear and boosted trees
@@ -97,14 +101,17 @@ class Model:
 
 # Linear regression class
 class LinearModel(Model):
+    
     def __init__(self, df_train, df_test):
         super().__init__(df_train, df_test)
 
     def run(self):
+        """
+        Train the model using a linear classifier (regression model)
+        """
         age_times_sex = fc.crossed_column(['Age', 'Sex'], hash_bucket_size=100)
         derived_feature_columns = [age_times_sex]
 
-        # Train the model using a linear classifier (regression model)
         # TODO: Suppress WARNING:tensorflow:Using temporary folder as model directory: x
         self.ALGORITHM = tf.estimator.LinearClassifier(feature_columns=self.FEATURE_COLUMNS+derived_feature_columns)
         self.ALGORITHM.train(self.train_input_fn)
@@ -113,11 +120,14 @@ class LinearModel(Model):
         return result
 
 class BoostedTreesModel(Model):
+    
     def __init__(self, df_train, df_test):
         super().__init__(df_train, df_test)
 
     def run(self):
-        # Train again, but using a Boosted Trees model
+        """
+        Train the model using a boosted tree classifier.
+        """
         n_batches = 20
         self.ALGORITHM = tf.estimator.BoostedTreesClassifier(feature_columns=self.FEATURE_COLUMNS, n_batches_per_layer=n_batches)
         self.ALGORITHM.train(self.train_input_fn, max_steps=100)
