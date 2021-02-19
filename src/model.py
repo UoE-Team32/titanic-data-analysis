@@ -16,7 +16,7 @@ class Model:
 
     FEATURE_COLUMNS = []
 
-    linear_est = None
+    ALGORITHM = None
 
     def __init__(self, df_train, df_test):
         self.df_train = df_train
@@ -54,28 +54,24 @@ class Model:
             self.FEATURE_COLUMNS.append(tf.feature_column.numeric_column(feature_name, dtype=tf.float32))
 
         # Creating and training testing inputs
-        train_input_fn = self.make_input_fn(self.df_train, self.y_train, num_epochs=20)
-        eval_input_fn = self.make_input_fn(self.df_eval, self.y_eval, num_epochs=1, shuffle=False)
+        self.train_input_fn = self.make_input_fn(self.df_train, self.y_train, num_epochs=20)
+        self.eval_input_fn = self.make_input_fn(self.df_eval, self.y_eval, num_epochs=1, shuffle=False)
 
         # Create a dataset
         self.make_input_fn(self.df_train, self.y_train, batch_size=10)()
 
-        age_times_sex = fc.crossed_column(['Age', 'Sex'], hash_bucket_size=100)
-        derived_feature_columns = [age_times_sex]
-
-        # Train the model
-        # TODO: Suppress WARNING:tensorflow:Using temporary folder as model directory: x
-        self.linear_est = tf.estimator.LinearClassifier(feature_columns=self.FEATURE_COLUMNS+derived_feature_columns)
-        self.linear_est.train(train_input_fn)
-        result = self.linear_est.evaluate(eval_input_fn)
-
+        result = self.run()
         pprint(result)
+
+    def run(self):
+        return NotImplementedError
 
     # Testing method
     def test(self):
         test_input_fn = self.make_input_fn(self.df_test, self.y_test, num_epochs=1, shuffle=False)
 
-        pred_dicts = list(self.linear_est.predict(test_input_fn))
+        # Clean this up so we can choose between linear and boosted trees
+        pred_dicts = list(self.ALGORITHM.predict(test_input_fn))
         probabilities = pd.Series([pred['probabilities'][1] for pred in pred_dicts])
 
         # Determine whether or not the passenger survived
@@ -98,3 +94,33 @@ class Model:
         print(sub_df.Survived.value_counts())
 
         return sub_df
+
+# Linear regression class
+class LinearModel(Model):
+    def __init__(self, df_train, df_test):
+        super().__init__(df_train, df_test)
+
+    def run(self):
+        age_times_sex = fc.crossed_column(['Age', 'Sex'], hash_bucket_size=100)
+        derived_feature_columns = [age_times_sex]
+
+        # Train the model using a linear classifier (regression model)
+        # TODO: Suppress WARNING:tensorflow:Using temporary folder as model directory: x
+        self.ALGORITHM = tf.estimator.LinearClassifier(feature_columns=self.FEATURE_COLUMNS+derived_feature_columns)
+        self.ALGORITHM.train(self.train_input_fn)
+        result = self.ALGORITHM.evaluate(self.eval_input_fn)
+
+        return result
+
+class BoostedTreesModel(Model):
+    def __init__(self, df_train, df_test):
+        super().__init__(df_train, df_test)
+
+    def run(self):
+        # Train again, but using a Boosted Trees model
+        n_batches = 20
+        self.ALGORITHM = tf.estimator.BoostedTreesClassifier(feature_columns=self.FEATURE_COLUMNS, n_batches_per_layer=n_batches)
+        self.ALGORITHM.train(self.train_input_fn, max_steps=100)
+        result = self.ALGORITHM.evaluate(self.eval_input_fn)
+
+        return result
