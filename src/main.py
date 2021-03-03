@@ -77,8 +77,7 @@ def main(argv):
 
         # Print fixed dataset
         msno.matrix(data)
-        Graph.plot_graph("Missing data Fix")
-
+        Graph.plot_graph("Missing data Fix", to_file=True)
 
         # Append dataset object to array
         datasets[dataset_name] = _dataset
