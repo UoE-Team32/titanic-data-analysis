@@ -16,6 +16,7 @@ class Log:
             logging.basicConfig(level=loglevel, format=cls._log_format)
         else:
             cls.logger = logging.getLogger("titanic-data-analysis")
+            cls.logger.propagate = False
             cls.logger.setLevel(loglevel)
             cls.loglevel = loglevel
             ch = logging.StreamHandler()
