@@ -1,3 +1,5 @@
+import os
+
 import matplotlib.pyplot as plt
 
 from utils.file import File
@@ -5,10 +7,13 @@ from utils.log import Log
 from utils._graph import check_backend
 
 
-try:
-    import _tkinter
-    TK_IMPLEMENTED = check_backend()
-except ImportError:
+if os.environ.get('DISPLAY'):
+    try:
+        import _tkinter
+        TK_IMPLEMENTED = check_backend()
+    except ImportError:
+        TK_IMPLEMENTED = False
+else:
     TK_IMPLEMENTED = False
 
 

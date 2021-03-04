@@ -6,7 +6,10 @@ that is matplotlib's implementation of backends.
 """
 
 import os
-from _tkinter import TclError
+try:
+    from _tkinter import TclError
+except ImportError:
+    pass
 from multiprocessing import Process
 
 import numpy as np
@@ -37,7 +40,7 @@ def check_backend():
         matplotlib.use("Agg", force=True)
         tk = False
     finally:
-        p1.kill()
+        p1.terminate()
         plt.close()
         print("Set backend to %s" % matplotlib.get_backend())
         return tk
