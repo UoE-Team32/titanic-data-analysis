@@ -1,19 +1,17 @@
 import argparse
 import logging
-import os
 
 import missingno as msno
 
 import data_gaps
+from model import BoostedTreesModel
 from utils.dataset import Column, DataSet
 from utils.graph import Graph
 from utils.log import Log
-from model import Model
-from model import BoostedTreesModel
-from model import LinearModel
+
 
 # Suppress warnings (used to hide Tensorflow warnings)
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+# os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 
 def args():
@@ -84,7 +82,7 @@ def main(argv):
         # Append dataset object to array
         datasets[dataset_name] = _dataset
 
-    model = BoostedTreesModel(datasets['training'].df, datasets['testing'].df) # Change depending on algorithm
+    model = BoostedTreesModel(datasets['training'].df, datasets['testing'].df)  # Change depending on algorithm
     model.train()
 
     # Output to a CSV

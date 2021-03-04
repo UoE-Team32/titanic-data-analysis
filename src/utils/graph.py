@@ -1,12 +1,20 @@
-from utils.file import File
-
-try:
-    import _tkinter
-    TK_IMPLEMENTED = True
-except ImportError:
-    TK_IMPLEMENTED = False
+import os
 
 import matplotlib.pyplot as plt
+
+from utils.file import File
+from utils.log import Log
+from utils._graph import check_backend
+
+
+if os.environ.get('DISPLAY'):
+    try:
+        import _tkinter
+        TK_IMPLEMENTED = check_backend()
+    except ImportError:
+        TK_IMPLEMENTED = False
+else:
+    TK_IMPLEMENTED = False
 
 
 class Graph:
@@ -19,4 +27,4 @@ class Graph:
             filename = "/app/data/out/graphs/%s.png" % graph_name
             filename = File.get_safe_file_path(filename, ".png")
             plt.savefig(filename)
-            print("plot saved as: %s" % filename)
+            Log.info("plot saved as: %s" % filename)
