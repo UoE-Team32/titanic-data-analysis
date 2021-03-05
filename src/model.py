@@ -65,7 +65,8 @@ class Model:
         result = self.run()
         pprint(result)
 
-        return result
+    def run(self):
+        return NotImplementedError
 
     # Testing method
     def test(self):
