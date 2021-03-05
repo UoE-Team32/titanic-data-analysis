@@ -89,12 +89,12 @@ def main(argv):
     # Output to a CSV
     output_df = model.test()
     
-    output_df.Survived.value_counts().plot(kind='barh')
+    output_df.Survived.value_counts().plot(kind='bar')
 
     output_dataset = DataSet(None, output_df)
     output_dataset.save_csv("output.csv")
 
-    Graph.plot_graph('Survivor_Graph',to_file=False)
+    Graph.plot_graph('Survivor_Graph',to_file=True)
 
 if __name__ == '__main__':
     main(args())
