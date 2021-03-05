@@ -10,8 +10,7 @@ from utils.dataset import Column
 class Model:
     # BASE FEATURE COLUMNS
     # Our data columns
-    CATEGORICAL_COLUMNS = [Column.SEX.value, Column.SIBSP.value, Column.PARCH.value,
-                           Column.PCLASS.value, Column.EMBARKED.value]
+    CATEGORICAL_COLUMNS = [Column.SEX.value, Column.SIBSP.value, Column.PARCH.value, Column.PCLASS.value, Column.EMBARKED.value]
     NUMERIC_COLUMNS = [Column.AGE.value, Column.FARE.value]
 
     FEATURE_COLUMNS = []
@@ -23,6 +22,7 @@ class Model:
         self.df_eval = self.df_train.sample(frac=0.2, random_state=33)
         self.df_train.drop(self.df_eval.index, inplace=True)
 
+        # Drop the survived column
         self.y_train = df_train.pop(Column.SURVIVED.value)
         self.y_eval = self.df_eval.pop(Column.SURVIVED.value)
 
@@ -128,9 +128,9 @@ class BoostedTreesModel(Model):
         """
         Train the model using a boosted tree classifier.
         """
-        n_batches = 20
-        self.ALGORITHM = tf.estimator.BoostedTreesClassifier(feature_columns=self.FEATURE_COLUMNS, n_batches_per_layer=n_batches)
-        self.ALGORITHM.train(self.train_input_fn, max_steps=100)
+        n_batches = 25
+        self.ALGORITHM = tf.estimator.BoostedTreesClassifier(feature_columns=self.FEATURE_COLUMNS, n_batches_per_layer=n_batches, n_trees=100, l2_regularization=0.05)
+        self.ALGORITHM.train(self.train_input_fn, max_steps=50)
         result = self.ALGORITHM.evaluate(self.eval_input_fn)
 
         return result
