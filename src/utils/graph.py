@@ -28,3 +28,4 @@ class Graph:
             filename = File.get_safe_file_path(filename, ".png")
             plt.savefig(filename)
             Log.info("plot saved as: %s" % filename)
+        plt.clf()
