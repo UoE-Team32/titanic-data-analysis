@@ -94,7 +94,8 @@ def main(argv):
     output_dataset = DataSet(None, output_df)
     output_dataset.save_csv("output.csv")
 
-    Graph.plot_graph('Survivor_Graph',to_file=True)
+    Graph.plot_graph('Survivor_Graph', to_file=True)
+
 
 if __name__ == '__main__':
     main(args())
