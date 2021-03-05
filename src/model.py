@@ -68,6 +68,7 @@ class Model:
     def run(self):
         return NotImplementedError
 
+    # Testing method
     def test(self):
         """
         Use the test dataset to produce and output for kaggle.

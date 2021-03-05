@@ -16,6 +16,7 @@ from utils.log import Log
 
 def args():
     parser = argparse.ArgumentParser(description='TensorFlow Model for the Kaggle Titanic Dataset.')
+    parser.add_argument('--dummy',help='not gonna run model')
     parser.add_argument('--train-dataset', metavar='filename.csv', type=str, default="train.csv",
                         help='a titanic dataset csv file.', dest="train_data")
     parser.add_argument('--log', default="INFO", dest="loglevel", help='the logging level')
@@ -82,13 +83,18 @@ def main(argv):
         # Append dataset object to array
         datasets[dataset_name] = _dataset
 
-    model = BoostedTreesModel(datasets['training'].df, datasets['testing'].df)  # Change depending on algorithm
-    model.train()
+    model = BoostedTreesModel(datasets['training'].df, datasets['testing'].df)
+    results = model.train()
 
     # Output to a CSV
     output_df = model.test()
+    
+    output_df.Survived.value_counts().plot(kind='bar')
+
     output_dataset = DataSet(None, output_df)
     output_dataset.save_csv("output.csv")
+
+    Graph.plot_graph('Survivor_Graph', to_file=True)
 
 
 if __name__ == '__main__':
